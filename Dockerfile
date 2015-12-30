@@ -1,6 +1,6 @@
 FROM ubuntu
 
-RUN apt-get update && apt-get install -y cmake imagemagick libeigen3-dev gfortran libatlas-base-dev file  zlib1g-dev libjpeg-dev libboost-dev git build-essential wget  libgflags-dev freeglut3-dev libxmu-dev libxi-dev
+RUN apt-get update && apt-get install -y cmake imagemagick libeigen3-dev gfortran libatlas-base-dev file  zlib1g-dev libjpeg-dev libboost-dev git build-essential wget  libgflags-dev freeglut3-dev libxmu-dev libxi-dev libpng-dev
 
 
 WORKDIR /opt
@@ -21,11 +21,14 @@ WORKDIR /opt/ceres-solver-1.10.0
 RUN mkdir -p build && cd build && cmake .. && make -j3  && make install
 
 WORKDIR /opt
-RUN wget https://github.com/sweeneychris/TheiaSfM/archive/v0.5.tar.gz && tar xzvf v0.5.tar.gz
-WORKDIR /opt/TheiaSfM-0.5/
-RUN mkdir /opt/TheiaSfM-0.5/build
-WORKDIR /opt/TheiaSfM-0.5/build
+RUN  git clone https://github.com/sweeneychris/TheiaSfM.git
+WORKDIR /opt/TheiaSfM/
+RUN mkdir /opt/TheiaSfM/build
+WORKDIR /opt/TheiaSfM/build
 RUN cmake .. && make   && make install
 
+WORKDIR /opt/TheiaSfM/build/applications/
+RUN make && make install
+ENV  PATH /opt/TheiaSfM/build/bin/:$PATH
 
 CMD /bin/bash
